@@ -349,11 +349,11 @@ _RE_TOKENIZER = re.compile(
         ^content-type:
 
         # The field value consists of printable US-ASCII chars, spaces and tabs.
-        [\x21-\x7e\ \t]+
+        [\x21-\xff\ \t]+
 
         # The optional field folded part starts from a newline followed by one
         # or more spaces and field value symbols (can not be empty).
-        (?:(?:\r\n|\n)[ \t]+[\x20-\x7e \t]+)*
+        (?:(?:\r\n|\n)[ \t]+[\x20-\xff \t]+)*
     )
     |
     (?P<boundary>

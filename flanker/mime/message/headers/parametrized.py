@@ -5,6 +5,7 @@ import urllib
 import regex as re
 from flanker.mime.message.headers import encodedword
 from flanker.mime.message import charsets
+from flanker.utils import to_unicode
 from collections import deque
 from itertools import groupby
 
@@ -100,7 +101,7 @@ def concatenate(parts):
         return encodedword.mime_to_unicode(get_value(part))
     else:
         return u"".join(
-            decode_new_style(p) for p in partition(parts))
+            to_unicode(decode_new_style(p)) for p in partition(parts))
 
 
 def match_parameter(rest):
@@ -187,7 +188,6 @@ def decode_charset(parameter):
     """Decodes things like:
     "us-ascii'en'This%20is%20even%20more%20%2A%2A%2Afun%2A%2A%2A%20"
     to unicode """
-
     v = get_value(parameter)
     parts = v.split("'", 2)
     if len(parts) != 3:
@@ -295,6 +295,9 @@ newStyleParameter = re.compile(r"""
      =
      # skip spaces
      [\ \t]*
+     "?
+     # skip spaces
+     [\ \t]*
      (?P<value>
        (?:
          "(?:
@@ -307,6 +310,8 @@ newStyleParameter = re.compile(r"""
      # any (US-ASCII) CHAR except SPACE, CTLs, or tspecials
      [^\x00-\x1f\s\(\)<>@,;:\\"/\[\]\?=]+
      )
+      # ends with optional quoting sign that we ignore
+     "?
      # skip spaces
      [\ \t]*
      ;?
