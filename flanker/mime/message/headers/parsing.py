@@ -40,7 +40,7 @@ def parse_header_value(name, val):
         else:
             return WithParams(val, params)
     else:
-        return val
+        return val if is_pure_ascii(val) else to_unicode(val)
 
 
 def is_empty(line):
